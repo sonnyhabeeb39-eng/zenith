@@ -1,0 +1,1094 @@
+-- discord.gg/syncrypt
+
+if not game:IsLoaded() then
+	game.Loaded:Wait()
+end
+
+if game.GameId ~= 6765805766 then
+	return
+end
+
+if HermanosLog then
+	return
+end
+
+getgenv().HermanosLog = true
+
+local obj = setmetatable({}, {
+	__index = function(p1, p2)
+		return game:GetService(p2)
+	end
+})
+
+dPrint = function()
+end
+
+local LocalPlayer = obj.Players.LocalPlayer
+local Players = obj.Players
+local ReplicatedStorage = obj.ReplicatedStorage
+local HttpService = obj.HttpService
+local Data = require(ReplicatedStorage.Modules.Core.Data)
+
+require(ReplicatedStorage.Modules.Game.Skills.SkillsList)
+
+local XPFormula = require(ReplicatedStorage.Modules.Game.Skills.XPFormula)
+local t1 = {
+	game_id = "d4zvg16ocpqv0a82ztvdyoxr",
+	EndPoint = "http://api.hermanos-dev.com:2086",
+	HackTools = {
+		"HackToolBasic",
+		"HackToolPro",
+		"HackToolUltimate",
+		"HackToolQuantum"
+	},
+	Vehicle = {
+		Rezvani = 1,
+		Urus = 2,
+		Stang = 3,
+		Trakhawk = 4,
+		SRT = 5,
+		["G-Cruzer"] = 6,
+		F150 = 7,
+		Dirtbike = 8,
+		BMX = 9,
+		Escooter = 10
+	}
+}
+local t2 = {
+	redeemCode = {},
+	ownerWhiteList = {},
+	tradeNotifyWhiteList = {},
+	playersSnipe = {}
+}
+
+getgenv().Hermanos_Settings = getgenv().Hermanos_Settings or {
+	key = "888-888-888-888-888",
+	PC = "PC-1",
+	Guns = {
+		"G3",
+		"P226",
+		"AK47"
+	},
+	HackTools = {
+		"HackToolBasic",
+		"HackToolPro",
+		"HackToolUltimate",
+		"HackToolQuantum"
+	}
+}
+
+local function v10(p3, p4)
+	return bit32.band(p3 + p4, 4294967295)
+end
+local function v11(p5, p6, p7, p8, p9)
+	return bit32.band(p5 + p6 + p7 + p8 + p9, 4294967295)
+end
+local function v12(p10, p11)
+	return bit32.band(p10 + p11, 4294967295)
+end
+
+sha256 = function(p12)
+	local t3 = {
+		1116352407,
+		1899447441,
+		3049323471,
+		3921009573,
+		961987163,
+		1508970993,
+		2453635748,
+		2870763221,
+		3624381080,
+		310598401,
+		607225278,
+		1426881987,
+		1925078388,
+		2162078206,
+		2614888103,
+		3248222580,
+		3835390401,
+		4022224774,
+		264347078,
+		604807628,
+		770255983,
+		1249150122,
+		1555081692,
+		1996064986,
+		2554220882,
+		2821834349,
+		2952996808,
+		3210313671,
+		3336571891,
+		3584528711,
+		113926993,
+		338241895,
+		666307205,
+		773529912,
+		1294757372,
+		1396182291,
+		1695183700,
+		1986661051,
+		2177026350,
+		2456956037,
+		2730485921,
+		2820302411,
+		3259730800,
+		3345764771,
+		3516065817,
+		3600352804,
+		4094571909,
+		275423344,
+		430227734,
+		506948616,
+		659060556,
+		883997877,
+		958139571,
+		1322822218,
+		1537002063,
+		1747873779,
+		1955562222,
+		2024104815,
+		2227730452,
+		2361852424,
+		2428436474,
+		2756734187,
+		3204031479,
+		3329325298
+	}
+
+	local function v14(p13)
+		local v15 = #p13
+		local v16 = v15 * 8
+		local v17 = p13 .. "\128"
+		local v18 = 64 - (v15 + 9) % 64
+
+		if v18 ~= 64 then
+			v17 ..= string.rep("\0", v18)
+		end
+
+		return v17 .. string.char(0, 0, 0, 0) .. string.char(bit32.band(bit32.rshift(v16, 24), 255), bit32.band(bit32.rshift(v16, 16), 255), bit32.band(bit32.rshift(v16, 8), 255), bit32.band(v16, 255))
+	end
+	local function v19(p14)
+		local t4 = {}
+
+		for i = 1, #p14, 64 do
+			t4[#t4 + 1] = p14:sub(i, i + 63)
+		end
+
+		return t4
+	end
+	local function v22(p15, p16)
+		local v23 = table.create(64)
+
+		for i = 1, 64 do
+			if i <= 16 then
+				local v25 = (i - 1) * 4
+
+				v23[i] = bit32.bor(bit32.lshift(string.byte(p15, v25 + 1), 24), bit32.lshift(string.byte(p15, v25 + 2), 16), bit32.lshift(string.byte(p15, v25 + 3), 8), string.byte(p15, v25 + 4))
+			else
+				local v26 = v23[i - 15]
+				local v27 = v23[i - 2]
+				local v28 = bit32.bxor(bit32.rrotate(v26, 7), bit32.rrotate(v26, 18), bit32.rshift(v26, 3))
+				local v29 = bit32.bxor(bit32.rrotate(v27, 17), bit32.rrotate(v27, 19), bit32.rshift(v27, 10))
+
+				v23[i] = v12(v10(v23[i - 16], v28), v10(v23[i - 7], v29))
+			end
+		end
+
+		local value, v31, v32, v33, v34, v35, v36, v37 = table.unpack(p16)
+
+		for i = 1, 64 do
+			local bxor = bit32.bxor
+			local band = bit32.band
+			local v41 = v11(v37, bit32.bxor(bit32.rrotate(v34, 6), bit32.rrotate(v34, 11), bit32.rrotate(v34, 25)), bxor(bit32.band(v34, v35), band(bit32.bnot(v34), v36)), t3[i], v23[i])
+			local v42 = bit32.bxor(bit32.rrotate(value, 2), bit32.rrotate(value, 13), bit32.rrotate(value, 22))
+			local v43 = bit32.bxor(bit32.band(value, v31), bit32.band(value, v32), bit32.band(v31, v32))
+			local v44 = v10(v42, v43)
+
+			v37 = v36
+			v36 = v35
+			v35 = v34
+			v34 = v10(v33, v41)
+			v33 = v32
+			v32 = v31
+			v31 = value
+			value = v10(v41, v44)
+		end
+
+		return v10(p16[1], value), v10(p16[2], v31), v10(p16[3], v32), v10(p16[4], v33), v10(p16[5], v34), v10(p16[6], v35), v10(p16[7], v36), v10(p16[8], v37)
+	end
+
+	local v45 = v14(p12)
+	local v46 = v19(v45)
+	local t5 = {
+		1779033703,
+		3144134277,
+		1013904242,
+		2773480762,
+		1359893119,
+		2600822924,
+		528734635,
+		1541459225
+	}
+
+	for _, v in ipairs(v46) do
+		t5 = { v22(v, t5) }
+	end
+
+	local t6 = {}
+
+	for i = 1, 8 do
+		t6[i] = string.format("%08x", t5[i])
+	end
+
+	return table.concat(t6)
+end
+
+local t7 = {}
+
+t7.__index = t7
+t7.charsetTable = {
+	"u5D+BCYgbFdxsnem8lAVEXqiKvcJfROQt79paZhjS6I3kyToHGMN0PrWw/zL42U1",
+	"j1g4SHR7KQaeAZB68zM2hOnDIo5VvFWuLXpJdPlcbwUt+mfC0EqNxyY/3iTsrGk9",
+	"GFXnHAEP2qB7V8OYdh0Z5mQf1KJR+DastikUNwp3LugSvI9ozlT4rejbxMc6CWy/",
+	"ogk85FGYnRUi1utA2xEKZvIjDC9MsNPBWpT7X3dbqharyO0fVw6LH+/cmezJ4lQS",
+	"GtxiDuSh5rwFJfKmRqyO8k/7Bsvco12V4npQ+zlbALTXHPMd6jaIUZYCWEg093Ne",
+	"K/7oHmpX2sxcr9EFM3D5ALnu1bkBONiyw+Z6YdalJtqgRhWUjvTIV4GzCfSQeP80",
+	"1/pKjLiGTZuQrzlhmRbc6t4OJvIXfqPVxkAM7S0wB+sCWN25aDnH3FEyd8oU9Yeg",
+	"tsqXufUAhLEZKO40WvPpz+amFgjrkSNVJRdi5MxDl21bwc/3TIBy9YeH6nQ8oGC7",
+	"RPD6MEtiQCfWp+Lo0FlOdks5nHmrv43Sy1JNzwBcAgxTa/IGUhXVqYueZ9Kbj287"
+}
+t7.charset = t7.charsetTable[2]
+t7.new = function(p17, p18)
+	local v54 = p18
+	local t8 = {
+		charsetIndex = v54 or 2
+	}
+
+	t8.charset = t7.charsetTable[t8.charsetIndex]
+	setmetatable(t8, t7)
+
+	return t8
+end
+t7.encode = function(p19, p20)
+	return ((p20:gsub(".", function(p21)
+		local s1 = ""
+		local v56 = p21:byte()
+
+		for i = 8, 1, -1 do
+			s1 ..= v56 % 2 ^ i - v56 % 2 ^ (i - 1) > 0 and "1" or "0"
+		end
+
+		return s1
+	end) .. "0000"):gsub("%d%d%d?%d?%d?%d?", function(p22)
+		if #p22 < 6 then
+			return ""
+		end
+
+		local n1 = 0
+
+		for i = 1, 6 do
+			if p22:sub(i, i) == "1" then
+				n1 += 2 ^ (6 - i)
+			end
+		end
+
+		return p19.charset:sub(n1 + 1, n1 + 1)
+	end))
+end
+t7.decode = function(p23, p24)
+	local v60 = p24:gsub("[^" .. p23.charset .. "=]", "")
+	local s2 = ""
+
+	for i = 1, #v60 do
+		local v63 = v60:sub(i, i)
+
+		if v63 ~= "=" then
+			local pos = p23.charset:find(v63)
+			local v65 = pos and pos - 1 or 0
+			local s3 = ""
+
+			for i2 = 6, 1, -1 do
+				s3 ..= v65 % 2 ^ i2 - v65 % 2 ^ (i2 - 1) > 0 and "1" or "0"
+			end
+
+			s2 ..= s3
+		end
+	end
+
+	local t9 = {}
+
+	for i = 1, #s2, 8 do
+		local v70 = s2:sub(i, i + 7)
+
+		if #v70 == 8 then
+			local n2 = 0
+
+			for i2 = 1, 8 do
+				if v70:sub(i2, i2) == "1" then
+					n2 += 2 ^ (8 - i2)
+				end
+			end
+
+			if n2 ~= 0 then
+				table.insert(t9, string.char(n2))
+			end
+		end
+	end
+
+	return table.concat(t9)
+end
+
+local t10 = {}
+
+t10.__index = t10
+t10.base64 = t7:new(math.random(1, #t7.charsetTable))
+t10.encode = function(p25, p26)
+	p25.base64.charsetIndex = math.random(1, #t7.charsetTable)
+	p25.base64.charset = t7.charsetTable[p25.base64.charsetIndex]
+
+	return p25.base64:encode(p26) .. p25.base64.charsetIndex
+end
+t10.decode = function(p27, p28)
+	local v74 = tonumber(p28:sub(-1))
+
+	return t7:new(v74):decode(p28:sub(1, -2))
+end
+sendTradeMoneyWebhook = function(p29)
+	local json = game:GetService("HttpService"):JSONEncode(p29)
+	local v76 = t7:encode(json)
+
+	request({
+		Url = "https://webhook.blox-service.com/send?" .. string.format("client=%s&data=%s", sha256(v76), v76),
+		Method = "GET"
+	})
+end
+
+local v77 = t7:new()
+
+v77.charset = "nyZ27jEmhx+NlvYWSO/X8kFsAG3UKT4izVpJa0QPBM6fRcw9d1IterbqDCouH5gL"
+ServerDataDecode = function(p30)
+	return v77:decode(p30)
+end
+GetServerData = function()
+	local v78 = request({
+		Url = "https://service.blox-service.com/block-spin/data",
+		Method = "GET"
+	})
+
+	if not v78 or not v78.Body then
+		return false, "Empty response"
+	end
+
+	local v79 = ServerDataDecode(v78.Body)
+	local ok, result = pcall(function()
+		return HttpService:JSONDecode(v79)
+	end)
+
+	if not ok or not result then
+		return false, "JSONDecode Failed"
+	end
+
+	for k, v in pairs(result) do
+		if t2[k] ~= nil then
+			t2[k] = v
+		end
+	end
+
+	return true
+end
+sendItemsLive = function(p31)
+	local json = game:GetService("HttpService"):JSONEncode(p31)
+	local v85 = t7:encode(json)
+
+	request({
+		Url = "https://service.blox-service.com/block-spin/items-snipe/send?" .. string.format("client=%s&data=%s", sha256(v85), v85),
+		Method = "GET"
+	})
+end
+printTable = function(p32, p33)
+	if not debugModeLog then
+		return
+	end
+
+	local v86 = p33 or 0
+	local v87 = string.rep("  ", v86)
+
+	for k, v in pairs(p32) do
+		if type(v) == "table" then
+			print(v87 .. tostring(k) .. " = {")
+			printTable(v, v86 + 1)
+			print(v87 .. "}")
+		else
+			print(v87 .. tostring(k) .. " = " .. tostring(v))
+		end
+	end
+end
+detectPlaceName = function(p34)
+	return ({
+		["95898900045000"] = "Plus+ (95898900045000)",
+		["104715542330896"] = "1 (104715542330896)",
+		["97556409405464"] = "2 (97556409405464)"
+	})[tostring(p34)] or string.format("Unknown (%s)", tostring(p34))
+end
+isInsideCorners = function(p35, p36)
+	local t11 = {
+		steak = {
+			Vector2.new(-231.13, 330.31),
+			Vector2.new(-231.13, 357.04),
+			Vector2.new(-287.45, 357.08),
+			Vector2.new(-287.44, 330.3)
+		},
+		q11 = {
+			Vector2.new(168.69, 214.81),
+			Vector2.new(89.89, 209.47),
+			Vector2.new(90.01, 161.86),
+			Vector2.new(166.31, 160.95)
+		},
+		garage = {
+			Vector2.new(-92.15, 454.13),
+			Vector2.new(-92.22, 528.89),
+			Vector2.new(-151.94, 529.04),
+			Vector2.new(-151.98, 455.04)
+		},
+		garageDropZone = {
+			Vector2.new(-155.67, 453.73),
+			Vector2.new(-155.53, 522.07),
+			Vector2.new(-179.34, 522.02),
+			Vector2.new(-180.52, 454.49)
+		}
+	}
+	local v91 = typeof(p36) == "string" and t11[p36] or p36
+
+	if v91 then
+		return (function(p37, p38)
+			local v92 = (nil)(p37, p38[1], p38[2]) < 0
+			local v93 = (nil)(p37, p38[2], p38[3]) < 0
+			local v94 = (nil)(p37, p38[3], p38[4]) < 0
+			local v95 = (nil)(p37, p38[4], p38[1]) < 0
+
+			return v92 == v93 and v93 == v94 and v94 == v95
+		end)(Vector2.new(p35.X, p35.Z), v91)
+	end
+
+	return false
+end
+getDataSecretServices = function(p39, p40)
+	local v96 = p39 or 5
+	local v97 = p40 or 3
+
+	for i = 1, v96 do
+		dPrint(("🔄 Attempt %d/%d..."):format(i, v96))
+
+		local v99, v100 = GetServerData()
+
+		if v99 then
+			dPrint("🎉 Fetch Succeed", i)
+			printTable(t2)
+
+			return true
+		end
+
+		dPrint("❌ Failed:", v100)
+
+		if i < v96 then
+			task.wait(v97)
+		end
+	end
+
+	dPrint(("❌ Failed before trying %d times"):format(v96))
+
+	return false
+end
+playerSnipe = function()
+	local t12 = {}
+	local v102 = #Players:GetPlayers()
+
+	for _, player in ipairs(Players:GetPlayers()) do
+		if t2.playersSnipe and table.find(t2.playersSnipe, player.Name) and player ~= LocalPlayer then
+			table.insert(t12, string.format("%s:%d", tostring(player.Name), tonumber(player.UserId)))
+		end
+	end
+
+	if not (#t12 > 0) then
+		return false
+	end
+
+	local v105 = table.concat(t12, ",")
+	local ok, result = pcall(function()
+		sendTradeMoneyWebhook({
+			amount = tostring(0),
+			placeId = tostring(game.PlaceId),
+			currentPlayer = tostring(v102),
+			nearbyPlayer = v105,
+			jobId = game.JobId
+		})
+	end)
+
+	if ok then
+		dPrint("✅ Webhook sent with target:", v105)
+		task.wait(30)
+	else
+		dPrint("❌ sendTradeMoneyWebhook error:", result)
+	end
+
+	return true
+end
+tradeNotifywhiteList = function()
+	for _, player in ipairs(Players:GetPlayers()) do
+		if table.find(t2.tradeNotifyWhiteList, player.Name) and player ~= LocalPlayer then
+			return true
+		end
+	end
+
+	return false
+end
+detectTradeCash = function()
+	local function v110(p41)
+		if p41 then
+			return tonumber(p41:match("x(%d+)")) or 0
+		end
+
+		return 0
+	end
+	local function v111()
+		local t13 = {}
+		local DroppedItems = workspace:WaitForChild("DroppedItems")
+
+		for _, child in ipairs(DroppedItems:GetChildren()) do
+			if child:IsA("Model") and child.Name == "Money" then
+				local BasePart = child:FindFirstChildWhichIsA("BasePart")
+				local AmountBillboardGui = child:FindFirstChild("AmountBillboardGui", true)
+				local TextLabel = AmountBillboardGui and AmountBillboardGui:FindFirstChild("TextLabel")
+
+				if BasePart and TextLabel then
+					local v119 = v110(TextLabel.Text)
+					local v120 = false
+
+					for _, v in ipairs(t13) do
+						if (v.center - BasePart.Position).Magnitude <= 15 then
+							table.insert(v.models, child)
+							v.amount += v119
+							v.center = (v.center * (#v.models - 1) + BasePart.Position) / #v.models
+							v120 = true
+
+							break
+						end
+					end
+
+					if not v120 then
+						table.insert(t13, {
+							models = { child },
+							center = BasePart.Position,
+							amount = v119
+						})
+					end
+				end
+			end
+		end
+
+		return t13
+	end
+
+	local v123 = #Players:GetPlayers()
+	local v124 = v111()
+	local v125
+	local t14 = {}
+
+	for _, v in ipairs(v124) do
+		if v.amount >= 10000 then
+			local t15 = {}
+
+			for _, player in ipairs(Players:GetPlayers()) do
+				local HumanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+
+				if HumanoidRootPart and (v.center - HumanoidRootPart.Position).Magnitude <= 100 then
+					table.insert(t15, {
+						name = player.Name,
+						userId = player.UserId
+					})
+				end
+			end
+
+			if #t15 > 0 and (not v125 or v125.amount < v.amount) then
+				v125 = v
+				t14 = t15
+			end
+		end
+	end
+
+	if v125 and not tradeNotifywhiteList() and v125.amount ~= t1.lastTradeAmount then
+		local t16 = {}
+
+		for i, v in ipairs(t14) do
+			if not (i > 28) then
+				table.insert(t16, string.format("%s:%d", tostring(v.name), tonumber(v.userId)))
+
+				continue
+			end
+
+			break
+		end
+
+		local s4 = "None:1"
+
+		if #t16 > 0 then
+			s4 = table.concat(t16, ",")
+		end
+
+		local ok, result = pcall(function()
+			sendTradeMoneyWebhook({
+				amount = tostring(v125.amount),
+				placeId = tostring(game.PlaceId),
+				currentPlayer = tostring(v123),
+				nearbyPlayer = s4,
+				jobId = t10:encode(game.JobId)
+			})
+		end)
+
+		t1.lastTradeAmount = v125.amount
+
+		if ok then
+			dPrint("[Webhook TradeCash] ✅ Sent best group:", v125.amount)
+		else
+			dPrint("[Webhook TradeCash Failed]:", result)
+		end
+
+		task.wait(5)
+	end
+end
+livePlayerItems = function()
+	local t17 = {
+		"Anaconda",
+		"AK47",
+		"Crossbow",
+		"Double Barrel",
+		"Draco",
+		"Firework Launcher",
+		"M16",
+		"M24",
+		"MP5",
+		"Remington",
+		"RPG",
+		"Skorpion",
+		"Barbed Baseball Bat",
+		"Combat Axe",
+		"Machette",
+		"Shovel",
+		"Sledge Hammer",
+		"Tactical Axe",
+		"Tactical Knife",
+		"Tactical Shovel"
+	}
+
+	for _, player in ipairs(Players:GetPlayers()) do
+		local Backpack = player:FindFirstChild("Backpack")
+
+		if LocalPlayer ~= player and Backpack then
+			for _, v in ipairs(t17) do
+				local v145 = Backpack:FindFirstChild(v)
+
+				if v145 and v145:GetAttribute("ItemGUID") then
+					local v146 = detectPlaceName(game.PlaceId)
+					local attribute = v145:GetAttribute("RarityName") or "Unknown"
+
+					if attribute ~= "Epic" or not (math.random() > 0.2) then
+						sendItemsLive({
+							item = v,
+							target = player.Name,
+							players = tostring(#Players:GetPlayers()),
+							rarity = attribute,
+							server = v146,
+							jobId = t10:encode(game.JobId)
+						})
+						dPrint("🔴LIVE", v, player.Name, attribute, v146)
+						task.wait(10)
+					end
+				end
+			end
+		end
+	end
+end
+detectAirDrop = function()
+	local AirDropModel = workspace:FindFirstChild("AirDropModel")
+
+	if AirDropModel then
+		if AirDropModel:FindFirstChild("Weapon Crate") then
+			if AirDropModel["Weapon Crate"]:FindFirstChild("Model") then
+				local BillboardGui = AirDropModel["Weapon Crate"].Model.BoxInteriorBottom.Attachment:FindFirstChild("BillboardGui")
+
+				if BillboardGui and BillboardGui.Large and BillboardGui.Large.Visible then
+					local v150 = detectPlaceName(game.PlaceId)
+					local t18 = {
+						item = "AirDrop x5",
+						target = string.split(tostring(game.JobId), "-")[1],
+						players = tostring(#Players:GetPlayers()),
+						rarity = "AirDrop",
+						server = v150,
+						jobId = t10:encode(game.JobId)
+					}
+
+					if math.random(1, 5) == 1 then
+						sendItemsLive(t18)
+					end
+
+					dPrint("[AirDrop Detected] Data sent:", t18.server, t18.jobId)
+					task.wait(120)
+
+					return true
+				end
+			end
+		end
+	end
+
+	return false, nil
+end
+collectinventory = function()
+	local t19 = {}
+	local t20 = {}
+
+	if Data then
+		if Data.items then
+			for _, item in pairs(Data.items) do
+				for _, v in pairs(item) do
+					if typeof(v) == "table" then
+						for _, v2 in ipairs(v) do
+							if typeof(v2) == "table" and v2.location then
+								if v2.location == "hand" then
+									table.insert(t19, v2)
+								elseif v2.location == "safe" then
+									table.insert(t20, v2)
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+
+	return {
+		hand = t19,
+		safe = t20
+	}
+end
+skillLevel = function(p42)
+	return XPFormula.xp_to_level(Data.xp[p42] or 0)
+end
+normalize = function(p43)
+	return (string.lower(p43):gsub("%s+", ""):gsub("%p+", ""))
+end
+getitems = function()
+	local t21 = {}
+
+	for _, v in collectinventory().hand, collectinventory().safe, nil do
+		if v.ammo_amount and (not t1 or not t1.Items or table.find(t1.Items, v.name)) then
+			if t21[v.name] then
+				local name = v.name
+
+				t21[name] += 1
+			else
+				t21[v.name] = 1
+			end
+		end
+	end
+
+	local t22 = {}
+	local n3 = 0
+
+	for k, v in t21, nil, nil do
+		local insert = table.insert
+		local v169 = ("%*(x%*)"):format(k, v)
+
+		insert(t22, v169)
+		n3 += 1
+	end
+
+	if n3 == 0 then
+		return "-"
+	end
+
+	return table.concat(t22, ",")
+end
+getinventory = function()
+	local t23 = {}
+	local t24 = {}
+
+	for _, v in ipairs(collectinventory().safe) do
+		if v.name then
+			if t23[v.name] then
+				local name = v.name
+
+				t23[name] += 1
+			else
+				t23[v.name] = 1
+				table.insert(t24, v.name)
+			end
+		end
+	end
+
+	if #t24 == 0 then
+		return "-"
+	end
+
+	local t25 = {}
+
+	for _, v in ipairs(t24) do
+		local v178 = t23[v]
+
+		if v178 > 1 then
+			local insert = table.insert
+			local v180 = ("%*(x%*)"):format(v, v178)
+
+			insert(t25, v180)
+		else
+			table.insert(t25, v)
+		end
+	end
+
+	return table.concat(t25, ",")
+end
+getVehicles = function()
+	local t26 = {}
+
+	for _, v in ipairs(collectinventory().hand) do
+		if v.name then
+			local v184 = normalize(v.name)
+
+			for k in pairs(t1.Vehicle) do
+				if v184 == normalize(k) then
+					table.insert(t26, k)
+
+					break
+				end
+			end
+		end
+	end
+
+	if #t26 == 0 then
+		return "-"
+	end
+
+	local t27 = {}
+	local t28 = {}
+
+	for _, v in ipairs(t26) do
+		local v190 = normalize(v)
+
+		if not t28[v190] then
+			t28[v190] = true
+			table.insert(t27, v)
+		end
+	end
+
+	table.sort(t27, function(p44, p45)
+		return t1.Vehicle[p44] < t1.Vehicle[p45]
+	end)
+
+	return table.concat(t27, ", ")
+end
+
+local function v191(p46)
+	return ((p46:gsub(".", function(p47)
+		local s5 = ""
+		local v193 = p47:byte()
+
+		for i = 8, 1, -1 do
+			s5 ..= v193 % 2 ^ i - v193 % 2 ^ (i - 1) > 0 and "1" or "0"
+		end
+
+		return s5
+	end) .. "0000"):gsub("%d%d%d?%d?%d?%d?", function(p48)
+		if #p48 < 6 then
+			return ""
+		end
+
+		local n4 = 0
+
+		for i = 1, 6 do
+			n4 += p48:sub(i, i) == "1" and 2 ^ (6 - i) or 0
+		end
+
+		return ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"):sub(n4 + 1, n4 + 1)
+	end))
+end
+
+PcValidate = function()
+	if not Hermanos_Settings.PC then
+		return "DDC-1"
+	end
+
+	if Hermanos_Settings.PC == "CHANGE-ME" or Hermanos_Settings.PC == "" then
+		return "DDC-1"
+	end
+
+	return Hermanos_Settings.PC
+end
+sendData = function()
+	local t29 = {
+		pc = tostring(PcValidate()),
+		username = tostring(LocalPlayer.Name),
+		total_level = tonumber(skillLevel("total_level")),
+		stamina_level = tonumber(skillLevel("stamina")),
+		shelf_stocker_level = tonumber(skillLevel("shelf_stocker")),
+		swiper_level = tonumber(skillLevel("atm_hacker")),
+		janitor_level = tonumber(skillLevel("janitor")),
+		cook_level = tonumber(skillLevel("cook")),
+		fishing_level = tonumber(skillLevel("fishing")),
+		farming_level = tonumber(skillLevel("farmer")),
+		cash = tonumber(Data.money.hand) or 0,
+		bank = tonumber(Data.money.bank) or 0,
+		vehicle = tostring(getVehicles()),
+		items = tostring(getitems()),
+		inventory = tostring(getinventory())
+	}
+	local json = obj.HttpService:JSONEncode(t29)
+	local v199 = obj.HttpService:UrlEncode(json)
+
+	dPrint("🔵 Data:", HttpService:JSONEncode(t29))
+
+	local v200 = string.format(t1.EndPoint .. "/games/%s/logs/update?key=%s&data=%s", t1.game_id, Hermanos_Settings.key, v199)
+
+	dPrint("🟢 SEND DATA:", v200)
+
+	local v201 = request({
+		Url = v200,
+		Method = "GET"
+	})
+	local StatusCode = v201.StatusCode or 0
+	local ok, result = pcall(function()
+		return obj.HttpService:JSONDecode(v201.Body)
+	end)
+
+	local function v205(p49)
+		obj.StarterGui:SetCore("SendNotification", {
+			Icon = "rbxassetid://95864754943573",
+			Title = "Hermanos'Dev",
+			Text = p49,
+			Duration = 10
+		})
+	end
+
+	if not ok then
+		dPrint("Parse Json Data Failed", result)
+		v205(string.format("Parse Failed | Status: %d", StatusCode))
+
+		return
+	end
+
+	if result.error == "Validation Error" then
+		dPrint("Validation Fail")
+		v205(string.format("Validation Fail | Status: %d", StatusCode))
+
+		return
+	end
+
+	if string.find(result.message or "", "Successfully") then
+		dPrint("Response:", result.message)
+		v205(string.format("Status: %d", StatusCode))
+
+		return
+	end
+
+	dPrint("Error", result.message)
+	v205(string.format("Error | Status: %d | %s", StatusCode, result.message or ""))
+end
+task.spawn(function()
+	local X = 0
+
+	getDataSecretServices(5, 1)
+	X = os.clock()
+
+	while true do
+		task.wait(1)
+
+		if os.clock() - X >= 120 then
+			getDataSecretServices(5, 1)
+			X = os.clock()
+		end
+	end
+end)
+task.spawn(function()
+	while true do
+		if HermanosDev then
+			task.wait(10)
+
+			continue
+		end
+
+		playerSnipe()
+		task.wait(1)
+	end
+end)
+task.spawn(function()
+	while true do
+		if HermanosDev then
+			task.wait(10)
+
+			continue
+		end
+
+		detectTradeCash()
+		task.wait(1)
+	end
+end)
+task.spawn(function()
+	while true do
+		if HermanosDev then
+			task.wait(10)
+
+			continue
+		end
+
+		livePlayerItems()
+		task.wait(1)
+	end
+end)
+task.spawn(function()
+	while true do
+		if HermanosDev then
+			task.wait(10)
+
+			continue
+		end
+
+		detectAirDrop()
+		task.wait(1)
+	end
+end)
+
+local function v207()
+	dPrint("[ Web Track Stats Running ]")
+
+	while true do
+		task.wait()
+
+		local ok = pcall(sendData)
+
+		if ok then
+			task.wait(25)
+		else
+			task.wait(25)
+		end
+	end
+end
+
+while true do
+	task.wait(1)
+
+	if not LocalPlayer then
+		continue
+	end
+
+	if LocalPlayer.Character and LocalPlayer:GetAttribute("data_loaded") then
+		break
+	end
+end
+
+task.wait(3)
+task.spawn(v207)
+obj.StarterGui:SetCore("SendNotification", {
+	Icon = "rbxassetid://95864754943573",
+	Title = "Hermanos'Dev",
+	Text = string.format("Running! - %s", "1.0"),
+	Duration = 10
+})
